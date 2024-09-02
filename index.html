@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #page-content {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #007bff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #chatbot-container.open {
+            width: 500px;
+            height: 600px;
+            border-radius: 10px;
+        }
+        #chatbot-icon {
+            color: white;
+            font-size: 24px;
+        }
+        #chatbot-content {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        #chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+        #user-input {
+            flex-grow: 1;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        #send-button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="page-content">SAMPLE PAGE</div>
+
+    <div id="chatbot-container">
+        <div id="chatbot-icon" onclick="toggleChatbot()">💬</div>
+        <div id="chatbot-content">
+            <div id="chat-messages"></div>
+            <div id="chat-input">
+                <input type="text" id="user-input" placeholder="Type your question...">
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('chatbot-container');
+        const icon = document.getElementById('chatbot-icon');
+        const content = document.getElementById('chatbot-content');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        function toggleChatbot() {
+            container.classList.toggle('open');
+            if (container.classList.contains('open')) {
+                icon.style.display = 'none';
+                content.style.display = 'flex';
+            } else {
+                icon.style.display = 'block';
+                content.style.display = 'none';
+            }
+        }
+
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (message) {
+                addMessage('You', message);
+                fetchResponse(message);
+                userInput.value = '';
+            }
+        }
+
+        function addMessage(sender, message) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageElement = document.createElement('div');
+            messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function fetchResponse(message) {
+            fetch('/api/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ question: message }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                addMessage('AI', data.answer);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                addMessage('AI', 'Sorry, there was an error processing your request.');
+            });
+        }
+
+        // Prevent chatbot from closing when clicking inside
+        content.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+
+        // Send message when clicking send button
+        sendButton.addEventListener('click', sendMessage);
+
+        // Send message when pressing Enter in input field
+        userInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
