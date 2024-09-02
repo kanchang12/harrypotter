@@ -12,7 +12,7 @@ if not cohere_api_key:
 
 # Initialize the Cohere client
 cohere_client = cohere.Client(api_key=cohere_api_key)
-
+pdf_texts = {}
 # Function to read text from a PDF file and chunk it
 def read_pdf(file_path, chunk_size=1000):
     with open(file_path, 'rb') as pdf_file:
