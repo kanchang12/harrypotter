@@ -6,11 +6,12 @@ import logging
 
 app = Flask(__name__)
 
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
+cohere_api_key = os.getenv("COHERE_API_KEY")
+if not cohere_api_key:
+    raise ValueError("No Cohere API key found in environment variables. Please set COHERE_API_KEY.")
 
-# Set your Cohere API key
-cohere_client = cohere.Client(api_key="lgPMgk5dOX1OJlISAS8P0cnMoGz9WP0z62rimsZ1")
+# Initialize the Cohere client
+cohere_client = cohere.Client(api_key=cohere_api_key)
 
 # Function to read text from a PDF file and chunk it
 def read_pdf(file_path, chunk_size=1000):
