@@ -33,7 +33,7 @@ def read_pdf(file_path, chunk_size=1000):
 
 # Read and process PDF files into chunks
 pdf_texts = {}
-pdf_folder = os.path.join(app.root_path, 'pdf_files')
+pdf_folder = ""
 for file in os.listdir(pdf_folder):
     if file.endswith('.pdf'):
         file_path = os.path.join(pdf_folder, file)
