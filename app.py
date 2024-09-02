@@ -95,4 +95,10 @@ def chatbot_response():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Run the Flask application with specific parameters
+    app.run(
+        host='0.0.0.0',  # Listen on all available IP addresses
+        port=5000,       # Specify the port number
+        debug=True       # Enable or disable debug mode
+    )
+
