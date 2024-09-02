@@ -32,12 +32,15 @@ def read_pdf(file_path, chunk_size=1000):
         return chunks
 
 # Read and process PDF files into chunks
-pdf_texts = {}
-pdf_folder = ""
+# Set the pdf_folder to the root directory where app.py is located
+pdf_folder = app.root_path
+
+# List files in the root directory where app.py is located
 for file in os.listdir(pdf_folder):
     if file.endswith('.pdf'):
         file_path = os.path.join(pdf_folder, file)
         pdf_texts[file] = read_pdf(file_path)
+
 
 # Function to find relevant chunks based on the user's question
 def find_relevant_chunks(question, pdf_texts):
